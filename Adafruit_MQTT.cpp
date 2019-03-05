@@ -464,7 +464,7 @@ Adafruit_MQTT_Subscribe *Adafruit_MQTT::readSubscription(int16_t timeout) {
   DEBUG_PRINTBUFFER(buffer, len);
 
   // Parse out length of packet.
-  topiclen = buffer[TOPIC_LENGTH];
+  topiclen = buffer[4];
   DEBUG_PRINT(F("Looking for subscription len ")); DEBUG_PRINTLN(topiclen);
 
   // Find subscription associated with this packet.
@@ -476,7 +476,7 @@ Adafruit_MQTT_Subscribe *Adafruit_MQTT::readSubscription(int16_t timeout) {
         continue;
       // Stop if the subscription topic matches the received topic. Be careful
       // to make comparison case insensitive.
-      if (strncasecmp((char*)buffer+TOPIC_LENGTH, subscriptions[i]->topic, topiclen) == 0) {
+      if (strncasecmp((char*)buffer+5, subscriptions[i]->topic, topiclen) == 0) {
         DEBUG_PRINT(F("Found sub #")); DEBUG_PRINTLN(i);
         break;
       }
@@ -502,7 +502,7 @@ Adafruit_MQTT_Subscribe *Adafruit_MQTT::readSubscription(int16_t timeout) {
     datalen = SUBSCRIPTIONDATALEN-1; // cut it off
   }
   // extract out just the data, into the subscription object itself
-  memmove(subscriptions[i]->lastread, buffer+TOPIC_LENGTH+topiclen+packet_id_len, datalen);
+  memmove(subscriptions[i]->lastread, buffer+5+topiclen+packet_id_len, datalen);
   subscriptions[i]->datalen = datalen;
   DEBUG_PRINT(F("Data len: ")); DEBUG_PRINTLN(datalen);
   DEBUG_PRINT(F("Data: ")); DEBUG_PRINTLN((char *)subscriptions[i]->lastread);
